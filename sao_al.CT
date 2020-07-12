@@ -1,0 +1,1803 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="31">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"hp base"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{
+  战斗时
+  rbx+08-30  my my2 diren
+  +1c 59 4294967295  4294967295
+  +20 16842752  16842752  16777216
+
+}
+
+[ENABLE]
+aobscanmodule(hp_INJECT,sao_al.exe,48 89 53 08 48 83 C4 40)
+alloc(newmem,$1000,"sao_al.exe"+21E335)
+alloc(iEnemyHP,$4,"sao_al.exe"+21E335+500)
+
+label(code)
+label(player)
+label(return)
+
+// 打boss最好不要秒，有些如果直接秒会卡剧情
+iEnemyHP:
+  dd 0
+
+newmem:
+  pushfq
+  cmp [rbx-8],#16842752 // 还是有微小差异，先下手a对面
+  je player
+
+  // 敌人,避免自动秒
+  cmp [rbx+10],rdx
+  je code
+
+  mov rdx,[iEnemyHP]
+  jmp code
+
+player:
+  mov rdx,[rbx+10] // max hp
+  jmp code
+
+code:
+  popfq
+  mov [rbx+08],rdx
+  add rsp,40
+  jmp return
+
+hp_INJECT:
+  jmp newmem
+  nop 3
+return:
+registersymbol(hp_INJECT)
+registersymbol(iEnemyHP)
+
+{$lua}
+if syntaxcheck then return end
+
+-- F2 在秒杀(0)和1000之间切换
+hk = createHotkey(function()
+  local iEnemyHP = readInteger('iEnemyHP')
+  if iEnemyHP ~= nil then
+    writeInteger('iEnemyHP', iEnemyHP == 1000 and 0 or 1000 )
+  end
+end, VK_F2)
+{$asm}
+
+[DISABLE]
+hp_INJECT:
+  db 48 89 53 08 48 83 C4 40
+
+unregistersymbol(hp_INJECT iEnemyHP)
+dealloc(newmem)
+dealloc(iEnemyHP)
+
+{$lua}
+if syntaxcheck then return end
+hk.destroy()
+{$asm}
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+21E335
+
+"sao_al.exe"+21E306: 48 8B 44 24 48                 -  mov rax,[rsp+48]
+"sao_al.exe"+21E30B: 45 33 C9                       -  xor r9d,r9d
+"sao_al.exe"+21E30E: C6 44 24 30 3C                 -  mov byte ptr [rsp+30],3C
+"sao_al.exe"+21E313: 49 B8 FF FF FF FF FF FF FF 7F  -  mov r8,7FFFFFFFFFFFFFFF
+"sao_al.exe"+21E31D: 48 89 44 24 20                 -  mov [rsp+20],rax
+"sao_al.exe"+21E322: E8 69 15 EE FF                 -  call sao_al.exe+FF890
+"sao_al.exe"+21E327: 48 C7 43 08 00 00 00 00        -  mov qword ptr [rbx+08],00000000
+"sao_al.exe"+21E32F: 48 83 C4 40                    -  add rsp,40
+"sao_al.exe"+21E333: 5B                             -  pop rbx
+"sao_al.exe"+21E334: C3                             -  ret 
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+21E335: 48 89 53 08                    -  mov [rbx+08],rdx
+"sao_al.exe"+21E339: 48 83 C4 40                    -  add rsp,40
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+21E33D: 5B                             -  pop rbx
+"sao_al.exe"+21E33E: C3                             -  ret 
+"sao_al.exe"+21E33F: CC                             -  int 3 
+"sao_al.exe"+21E340: 48 83 EC 28                    -  sub rsp,28
+"sao_al.exe"+21E344: 48 8B 41 10                    -  mov rax,[rcx+10]
+"sao_al.exe"+21E348: 48 85 C0                       -  test rax,rax
+"sao_al.exe"+21E34B: 79 07                          -  jns sao_al.exe+21E354
+"sao_al.exe"+21E34D: 32 C0                          -  xor al,al
+"sao_al.exe"+21E34F: 48 83 C4 28                    -  add rsp,28
+"sao_al.exe"+21E353: C3                             -  ret 
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>53</ID>
+          <Description>"iEnemyHP"</Description>
+          <LastState Value="0" RealAddress="13FFE0000"/>
+          <VariableType>4 Bytes</VariableType>
+          <Address>iEnemyHP</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>21</ID>
+      <Description>"current exp"</Description>
+      <LastState Value="200" RealAddress="141F74C68"/>
+      <VariableType>4 Bytes</VariableType>
+      <Address>sao_al.exe+1F74C68</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>30</ID>
+      <Description>"50等级"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+
+if syntaxcheck then return end
+
+[ENABLE]
+local lev = readInteger("sao_al.exe+1F74C6C")
+if lev ~= nil and lev ~= 0 then
+  writeInteger("sao_al.exe+1F74C6C", 50)
+end
+
+[DISABLE]
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>29</ID>
+          <Description>"lev"</Description>
+          <LastState Value="50" RealAddress="141F74C6C"/>
+          <VariableType>4 Bytes</VariableType>
+          <Address>sao_al.exe+1F74C6C</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>31</ID>
+      <Description>"技能点)16位"</Description>
+      <LastState Value="017D" RealAddress="141F74D40"/>
+      <ShowAsHex>1</ShowAsHex>
+      <VariableType>2 Bytes</VariableType>
+      <Address>141F74D40</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>38</ID>
+      <Description>"99材料"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{
+ 打开背包生效
+}
+
+[ENABLE]
+aobscanmodule(sdfsdf_INJECT,sao_al.exe,41 0F B7 45 56)
+alloc(newmem,$1000,"sao_al.exe"+6A1BEC)
+
+label(return)
+
+newmem:
+  //
+  push eax
+  mov eax,[r13+56]
+  mov ax,#99
+  mov [r13+56], eax
+  pop eax
+
+  movzx eax,word ptr [r13+56]
+  jmp return
+
+sdfsdf_INJECT:
+  jmp newmem
+return:
+registersymbol(sdfsdf_INJECT)
+
+[DISABLE]
+
+sdfsdf_INJECT:
+  db 41 0F B7 45 56
+
+unregistersymbol(sdfsdf_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+6A1BEC
+
+"sao_al.exe"+6A1BC1: 84 C0                 -  test al,al
+"sao_al.exe"+6A1BC3: 0F 84 38 01 00 00     -  je sao_al.exe+6A1D01
+"sao_al.exe"+6A1BC9: 49 63 47 20           -  movsxd  rax,dword ptr [r15+20]
+"sao_al.exe"+6A1BCD: 4C 6B F8 1C           -  imul r15,rax,1C
+"sao_al.exe"+6A1BD1: 48 8B 44 24 68        -  mov rax,[rsp+68]
+"sao_al.exe"+6A1BD6: 4C 03 78 10           -  add r15,[rax+10]
+"sao_al.exe"+6A1BDA: 0F 84 18 01 00 00     -  je sao_al.exe+6A1CF8
+"sao_al.exe"+6A1BE0: 41 8B 45 04           -  mov eax,[r13+04]
+"sao_al.exe"+6A1BE4: 83 7C 24 30 04        -  cmp dword ptr [rsp+30],04
+"sao_al.exe"+6A1BE9: 41 89 07              -  mov [r15],eax
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+6A1BEC: 41 0F B7 45 56        -  movzx eax,word ptr [r13+56]
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+6A1BF1: 41 89 47 08           -  mov [r15+08],eax
+"sao_al.exe"+6A1BF5: 0F 94 C0              -  sete al
+"sao_al.exe"+6A1BF8: 80 7C 24 34 00        -  cmp byte ptr [rsp+34],00
+"sao_al.exe"+6A1BFD: 41 88 47 11           -  mov [r15+11],al
+"sao_al.exe"+6A1C01: 41 C6 47 10 00        -  mov byte ptr [r15+10],00
+"sao_al.exe"+6A1C06: 41 0F B6 45 02        -  movzx eax,byte ptr [r13+02]
+"sao_al.exe"+6A1C0B: 41 89 47 14           -  mov [r15+14],eax
+"sao_al.exe"+6A1C0F: 41 0F BF 45 00        -  movsx eax,word ptr [r13+00]
+"sao_al.exe"+6A1C14: 41 89 47 18           -  mov [r15+18],eax
+"sao_al.exe"+6A1C18: 0F 84 DA 00 00 00     -  je sao_al.exe+6A1CF8
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>40</ID>
+      <Description>"停止倒计时 base"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(StopTime_INJECT,sao_al.exe,F3 0F 11 73 04 48 8B 5C)
+alloc(newmem,$1000,"sao_al.exe"+7F6CC6)
+
+alloc(iEnd,$4)
+
+label(code)
+label(end)
+label(stop)
+label(return)
+
+iEnd:
+ dd 0
+
+newmem:
+  pushfq
+
+  cmp [iEnd],0
+  je stop
+  jmp end
+
+// 停止计时器
+stop:
+  popfq
+  nop
+  nop
+  nop
+  nop
+  nop
+  jmp return
+
+// 结束计时器
+end:
+  popfq
+  movss [rbx+04],xmm15
+  jmp return
+
+code:
+  popfq
+  movss [rbx+04],xmm6
+  jmp return
+
+
+
+StopTime_INJECT:
+  jmp newmem
+return:
+registersymbol(StopTime_INJECT iEnd)
+
+[DISABLE]
+
+StopTime_INJECT:
+  db F3 0F 11 73 04
+
+unregistersymbol(StopTime_INJECT iEnd)
+dealloc(newmem)
+dealloc(iEnd)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+7F6CC6
+
+"sao_al.exe"+7F6C9B: C6 44 24 30 3E        -  mov byte ptr [rsp+30],3E
+"sao_al.exe"+7F6CA0: C6 44 24 28 3D        -  mov byte ptr [rsp+28],3D
+"sao_al.exe"+7F6CA5: 48 89 44 24 20        -  mov [rsp+20],rax
+"sao_al.exe"+7F6CAA: E8 B1 1B 92 FF        -  call sao_al.exe+118860
+"sao_al.exe"+7F6CAF: C7 43 04 80 4F C3 47  -  mov [rbx+04],47C34F80
+"sao_al.exe"+7F6CB6: 48 8B 5C 24 60        -  mov rbx,[rsp+60]
+"sao_al.exe"+7F6CBB: 0F 28 74 24 40        -  movaps xmm6,[rsp+40]
+"sao_al.exe"+7F6CC0: 48 83 C4 50           -  add rsp,50
+"sao_al.exe"+7F6CC4: 5F                    -  pop rdi
+"sao_al.exe"+7F6CC5: C3                    -  ret 
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+7F6CC6: F3 0F 11 73 04        -  movss [rbx+04],xmm6
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+7F6CCB: 48 8B 5C 24 60        -  mov rbx,[rsp+60]
+"sao_al.exe"+7F6CD0: 0F 28 74 24 40        -  movaps xmm6,[rsp+40]
+"sao_al.exe"+7F6CD5: 48 83 C4 50           -  add rsp,50
+"sao_al.exe"+7F6CD9: 5F                    -  pop rdi
+"sao_al.exe"+7F6CDA: C3                    -  ret 
+"sao_al.exe"+7F6CDB: CC                    -  int 3 
+"sao_al.exe"+7F6CDC: CC                    -  int 3 
+"sao_al.exe"+7F6CDD: CC                    -  int 3 
+"sao_al.exe"+7F6CDE: CC                    -  int 3 
+"sao_al.exe"+7F6CDF: CC                    -  int 3 
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>41</ID>
+          <Description>"结束倒计时"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+iEnd:
+ dd 1
+
+[DISABLE]
+iEnd:
+ dd 0
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>47</ID>
+      <Description>"无限氧气"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(bsdfdf_INJECT,sao_al.exe,89 53 28 48 83 C4 40)
+alloc(newmem,$1000,"sao_al.exe"+21F191)
+
+label(code)
+label(return)
+
+newmem:
+  mov edx,#1000
+code:
+  mov [rbx+28],edx
+  add rsp,40
+  jmp return
+
+bsdfdf_INJECT:
+  jmp newmem
+  nop 2
+return:
+registersymbol(bsdfdf_INJECT)
+
+[DISABLE]
+
+bsdfdf_INJECT:
+  db 89 53 28 48 83 C4 40
+
+unregistersymbol(bsdfdf_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+21F191
+
+"sao_al.exe"+21F167: 45 33 C9              -  xor r9d,r9d
+"sao_al.exe"+21F16A: C6 44 24 30 3C        -  mov byte ptr [rsp+30],3C
+"sao_al.exe"+21F16F: 41 B8 FF FF FF 7F     -  mov r8d,7FFFFFFF
+"sao_al.exe"+21F175: C6 44 24 28 3D        -  mov byte ptr [rsp+28],3D
+"sao_al.exe"+21F17A: 48 89 44 24 20        -  mov [rsp+20],rax
+"sao_al.exe"+21F17F: E8 BC DC E5 FF        -  call sao_al.exe+7CE40
+"sao_al.exe"+21F184: C7 43 28 00 00 00 00  -  mov [rbx+28],00000000
+"sao_al.exe"+21F18B: 48 83 C4 40           -  add rsp,40
+"sao_al.exe"+21F18F: 5B                    -  pop rbx
+"sao_al.exe"+21F190: C3                    -  ret 
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+21F191: 89 53 28              -  mov [rbx+28],edx
+"sao_al.exe"+21F194: 48 83 C4 40           -  add rsp,40
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+21F198: 5B                    -  pop rbx
+"sao_al.exe"+21F199: C3                    -  ret 
+"sao_al.exe"+21F19A: CC                    -  int 3 
+"sao_al.exe"+21F19B: CC                    -  int 3 
+"sao_al.exe"+21F19C: CC                    -  int 3 
+"sao_al.exe"+21F19D: CC                    -  int 3 
+"sao_al.exe"+21F19E: CC                    -  int 3 
+"sao_al.exe"+21F19F: CC                    -  int 3 
+"sao_al.exe"+21F1A0: 8B 41 30              -  mov eax,[rcx+30]
+"sao_al.exe"+21F1A3: C3                    -  ret 
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>52</ID>
+      <Description>"任务材料"</Description>
+      <Options moHideChildren="1"/>
+      <LastState Value="" Activated="1" RealAddress="00000000"/>
+      <GroupHeader>1</GroupHeader>
+      <Address/>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>49</ID>
+          <Description>"一次满任务材料"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+aobscanmodule(fghfgh_INJECT,sao_al.exe,8D 04 29 89 43 08)
+alloc(newmem,$1000,"sao_al.exe"+7F662F)
+
+label(code)
+label(return)
+
+newmem:
+  mov rbp,#99
+code:
+  lea eax,[rcx+rbp]
+  mov [rbx+08],eax
+  jmp return
+
+fghfgh_INJECT:
+  jmp newmem
+  nop
+return:
+registersymbol(fghfgh_INJECT)
+
+[DISABLE]
+fghfgh_INJECT:
+  db 8D 04 29 89 43 08
+
+unregistersymbol(fghfgh_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+7F662F
+
+"sao_al.exe"+7F6609: 48 8B 44 24 48        -  mov rax,[rsp+48]
+"sao_al.exe"+7F660E: 45 33 C9              -  xor r9d,r9d
+"sao_al.exe"+7F6611: C6 44 24 30 3E        -  mov byte ptr [rsp+30],3E
+"sao_al.exe"+7F6616: 44 8B C7              -  mov r8d,edi
+"sao_al.exe"+7F6619: C6 44 24 28 2B        -  mov byte ptr [rsp+28],2B
+"sao_al.exe"+7F661E: 8B D5                 -  mov edx,ebp
+"sao_al.exe"+7F6620: 48 89 44 24 20        -  mov [rsp+20],rax
+"sao_al.exe"+7F6625: E8 D6 9C 9C FF        -  call sao_al.exe+1C0300
+"sao_al.exe"+7F662A: 89 7B 08              -  mov [rbx+08],edi
+"sao_al.exe"+7F662D: EB 06                 -  jmp sao_al.exe+7F6635
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+7F662F: 8D 04 29              -  lea eax,[rcx+rbp]
+"sao_al.exe"+7F6632: 89 43 08              -  mov [rbx+08],eax
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+7F6635: 48 8B 5C 24 50        -  mov rbx,[rsp+50]
+"sao_al.exe"+7F663A: 48 8B 6C 24 58        -  mov rbp,[rsp+58]
+"sao_al.exe"+7F663F: 48 8B 74 24 60        -  mov rsi,[rsp+60]
+"sao_al.exe"+7F6644: 48 83 C4 40           -  add rsp,40
+"sao_al.exe"+7F6648: 5F                    -  pop rdi
+"sao_al.exe"+7F6649: C3                    -  ret 
+"sao_al.exe"+7F664A: CC                    -  int 3 
+"sao_al.exe"+7F664B: CC                    -  int 3 
+"sao_al.exe"+7F664C: CC                    -  int 3 
+"sao_al.exe"+7F664D: CC                    -  int 3 
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>51</ID>
+          <Description>"自动满任务材料"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{
+  m(打开关闭背包)触发，材料虽然刷满了，
+  但是并没有触发检测函数，所以不能交任务
+  需要手动触发一次检测(在游戏中获取一次任务材料)
+}
+[ENABLE]
+aobscanmodule(bfdgdg_INJECT,sao_al.exe,41 8B 40 08 48 8B 5C 24 30)
+alloc(newmem,$1000,"sao_al.exe"+7F70C1)
+
+label(code)
+label(return)
+
+newmem:
+  mov [r8+08],#99
+code:
+  mov eax,[r8+08]
+  mov rbx,[rsp+30]
+  jmp return
+
+bfdgdg_INJECT:
+  jmp newmem
+  nop 4
+return:
+registersymbol(bfdgdg_INJECT)
+
+[DISABLE]
+
+bfdgdg_INJECT:
+  db 41 8B 40 08 48 8B 5C 24 30
+
+unregistersymbol(bfdgdg_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+7F70C1
+
+"sao_al.exe"+7F70A1: 77 2D              -  ja sao_al.exe+7F70D0
+"sao_al.exe"+7F70A3: 83 FB 05           -  cmp ebx,05
+"sao_al.exe"+7F70A6: 77 28              -  ja sao_al.exe+7F70D0
+"sao_al.exe"+7F70A8: 81 FF D0 07 00 00  -  cmp edi,000007D0
+"sao_al.exe"+7F70AE: 73 08              -  jae sao_al.exe+7F70B8
+"sao_al.exe"+7F70B0: 48 8D 0C BF        -  lea rcx,[rdi+rdi*4]
+"sao_al.exe"+7F70B4: 4C 8D 04 C8        -  lea r8,[rax+rcx*8]
+"sao_al.exe"+7F70B8: 83 FB 06           -  cmp ebx,06
+"sao_al.exe"+7F70BB: 73 04              -  jae sao_al.exe+7F70C1
+"sao_al.exe"+7F70BD: 4D 8D 04 98        -  lea r8,[r8+rbx*4]
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+7F70C1: 41 8B 40 08        -  mov eax,[r8+08]
+"sao_al.exe"+7F70C5: 48 8B 5C 24 30     -  mov rbx,[rsp+30]
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+7F70CA: 48 83 C4 20        -  add rsp,20
+"sao_al.exe"+7F70CE: 5F                 -  pop rdi
+"sao_al.exe"+7F70CF: C3                 -  ret 
+"sao_al.exe"+7F70D0: 48 8B 5C 24 30     -  mov rbx,[rsp+30]
+"sao_al.exe"+7F70D5: 33 C0              -  xor eax,eax
+"sao_al.exe"+7F70D7: 48 83 C4 20        -  add rsp,20
+"sao_al.exe"+7F70DB: 5F                 -  pop rdi
+"sao_al.exe"+7F70DC: C3                 -  ret 
+"sao_al.exe"+7F70DD: CC                 -  int 3 
+"sao_al.exe"+7F70DE: CC                 -  int 3 
+}
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>56</ID>
+      <Description>"破花的保护"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ 破花的保护
+  如果左上角有任务，那么最好用自动满材料将材料刷满
+}
+
+[ENABLE]
+aobscanmodule(sdfsdfs_INJECT,sao_al.exe,74 4B 48 8B 55 80)
+alloc(newmem,$1000,"sao_al.exe"+D26D7)
+
+label(return)
+
+newmem:
+  jmp sao_al.exe+D2724
+  mov rdx,[rbp-80]
+  jmp return
+
+sdfsdfs_INJECT:
+  jmp newmem
+  nop
+return:
+registersymbol(sdfsdfs_INJECT)
+
+[DISABLE]
+sdfsdfs_INJECT:
+  db 74 4B 48 8B 55 80
+
+unregistersymbol(sdfsdfs_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+D26D7
+
+"sao_al.exe"+D26B2: 88 44 24 28        -  mov [rsp+28],al
+"sao_al.exe"+D26B6: 48 8B 45 80        -  mov rax,[rbp-80]
+"sao_al.exe"+D26BA: 48 89 44 24 20     -  mov [rsp+20],rax
+"sao_al.exe"+D26BF: 4C 8B 4D C0        -  mov r9,[rbp-40]
+"sao_al.exe"+D26C3: 44 0F B6 45 88     -  movzx r8d,byte ptr [rbp-78]
+"sao_al.exe"+D26C8: 49 8B D7           -  mov rdx,r15
+"sao_al.exe"+D26CB: 49 8B CE           -  mov rcx,r14
+"sao_al.exe"+D26CE: E8 8D 24 00 00     -  call sao_al.exe+D4B60
+"sao_al.exe"+D26D3: 8B D8              -  mov ebx,eax
+"sao_al.exe"+D26D5: 85 C0              -  test eax,eax
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+D26D7: 74 4B              -  je sao_al.exe+D2724
+"sao_al.exe"+D26D9: 48 8B 55 80        -  mov rdx,[rbp-80]
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+D26DD: 48 85 D2           -  test rdx,rdx
+"sao_al.exe"+D26E0: 74 0C              -  je sao_al.exe+D26EE
+"sao_al.exe"+D26E2: 48 8B CA           -  mov rcx,rdx
+"sao_al.exe"+D26E5: E8 86 05 01 00     -  call sao_al.exe+E2C70
+"sao_al.exe"+D26EA: 48 8B 55 80        -  mov rdx,[rbp-80]
+"sao_al.exe"+D26EE: 48 8B 4D C8        -  mov rcx,[rbp-38]
+"sao_al.exe"+D26F2: 48 89 4C 24 28     -  mov [rsp+28],rcx
+"sao_al.exe"+D26F7: 48 89 54 24 20     -  mov [rsp+20],rdx
+"sao_al.exe"+D26FC: 4C 8B 4D C0        -  mov r9,[rbp-40]
+"sao_al.exe"+D2700: 4D 8B C7           -  mov r8,r15
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>59</ID>
+      <Description>"好感度"</Description>
+      <Options moHideChildren="1"/>
+      <LastState Value="" Activated="1" RealAddress="00000000"/>
+      <GroupHeader>1</GroupHeader>
+      <Address/>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>58</ID>
+          <Description>"耐心"</Description>
+          <LastState Activated="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{
+}
+
+[ENABLE]
+aobscanmodule(dsdfs_INJECT,sao_al.exe,F3 0F 11 46 28 0F)
+alloc(newmem,$1000,"sao_al.exe"+82A811)
+
+label(code)
+label(return)
+label(fMax)
+
+newmem:
+  movss xmm0,[fMax]
+
+code:
+  movss [rsi+28],xmm0
+  jmp return
+
+fMax:
+  dd (float)100
+
+dsdfs_INJECT:
+  jmp newmem
+return:
+registersymbol(dsdfs_INJECT fMax)
+
+[DISABLE]
+dsdfs_INJECT:
+  db F3 0F 11 46 28
+
+unregistersymbol(dsdfs_INJECT fMax)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+82A811
+
+"sao_al.exe"+82A7E1: F3 0F 10 86 B8 00 00 00  -  movss xmm0,[rsi+000000B8]
+"sao_al.exe"+82A7E9: 0F 2F C6                 -  comiss xmm0,xmm6
+"sao_al.exe"+82A7EC: 76 0D                    -  jna sao_al.exe+82A7FB
+"sao_al.exe"+82A7EE: F3 41 0F 5C CF           -  subss xmm1,xmm15
+"sao_al.exe"+82A7F3: F3 0F 11 8E 04 01 00 00  -  movss [rsi+00000104],xmm1
+"sao_al.exe"+82A7FB: F3 0F 10 46 28           -  movss xmm0,[rsi+28]
+"sao_al.exe"+82A800: EB 0A                    -  jmp sao_al.exe+82A80C
+"sao_al.exe"+82A802: F3 0F 10 46 28           -  movss xmm0,[rsi+28]
+"sao_al.exe"+82A807: F3 41 0F 5C C2           -  subss xmm0,xmm10
+"sao_al.exe"+82A80C: F3 41 0F 5C C0           -  subss xmm0,xmm8
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+82A811: F3 0F 11 46 28           -  movss [rsi+28],xmm0
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+82A816: 0F 2F F0                 -  comiss xmm6,xmm0
+"sao_al.exe"+82A819: 76 07                    -  jna sao_al.exe+82A822
+"sao_al.exe"+82A81B: 44 89 76 28              -  mov [rsi+28],r14d
+"sao_al.exe"+82A81F: 0F 57 C0                 -  xorps xmm0,xmm0
+"sao_al.exe"+82A822: 4C 8B 0D 7F B8 6A 01     -  mov r9,[sao_al.exe+1ED60A8]
+"sao_al.exe"+82A829: 49 8B 81 88 00 00 00     -  mov rax,[r9+00000088]
+"sao_al.exe"+82A830: 48 85 C0                 -  test rax,rax
+"sao_al.exe"+82A833: 0F 84 AE 00 00 00        -  je sao_al.exe+82A8E7
+"sao_al.exe"+82A839: 48 8B 08                 -  mov rcx,[rax]
+"sao_al.exe"+82A83C: 48 8B 81 80 7C 00 00     -  mov rax,[rcx+00007C80]
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>61</ID>
+          <Description>"9999好感center"</Description>
+          <LastState Activated="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{
+  直接将好感度设置为9999
+}
+
+[ENABLE]
+aobscanmodule(dfsdfsf_INJECT,sao_al.exe,44 3B C2 41 0F 4C D0 E8 36)
+alloc(newmem,$1000,"sao_al.exe"+1C097E)
+
+label(code)
+label(return)
+
+newmem:
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+code:
+  //cmp r8d,edx
+  //cmovl edx,r8d
+  jmp return
+
+dfsdfsf_INJECT:
+  jmp newmem
+  nop 2
+return:
+registersymbol(dfsdfsf_INJECT)
+
+[DISABLE]
+dfsdfsf_INJECT:
+  db 44 3B C2 41 0F 4C D0
+
+unregistersymbol(dfsdfsf_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+1C097E
+
+"sao_al.exe"+1C0957: 48 8B D0              -  mov rdx,rax
+"sao_al.exe"+1C095A: 48 89 74 24 30        -  mov [rsp+30],rsi
+"sao_al.exe"+1C095F: 0F B7 CF              -  movzx ecx,di
+"sao_al.exe"+1C0962: E8 99 00 00 00        -  call sao_al.exe+1C0A00
+"sao_al.exe"+1C0967: 45 33 C0              -  xor r8d,r8d
+"sao_al.exe"+1C096A: 48 8D 8B EC 00 00 00  -  lea rcx,[rbx+000000EC]
+"sao_al.exe"+1C0971: BA 0F 27 00 00        -  mov edx,0000270F
+"sao_al.exe"+1C0976: 85 ED                 -  test ebp,ebp
+"sao_al.exe"+1C0978: 8B F0                 -  mov esi,eax
+"sao_al.exe"+1C097A: 44 0F 4F C5           -  cmovg r8d,ebp
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+1C097E: 44 3B C2              -  cmp r8d,edx
+"sao_al.exe"+1C0981: 41 0F 4C D0           -  cmovl edx,r8d
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+1C0985: E8 36 B7 FF FF        -  call sao_al.exe+1BC0C0
+"sao_al.exe"+1C098A: 48 8B D3              -  mov rdx,rbx
+"sao_al.exe"+1C098D: 0F B7 CF              -  movzx ecx,di
+"sao_al.exe"+1C0990: E8 6B 00 00 00        -  call sao_al.exe+1C0A00
+"sao_al.exe"+1C0995: 8B E8                 -  mov ebp,eax
+"sao_al.exe"+1C0997: 3B F0                 -  cmp esi,eax
+"sao_al.exe"+1C0999: 74 47                 -  je sao_al.exe+1C09E2
+"sao_al.exe"+1C099B: 8B 0D F7 3C D2 01     -  mov ecx,[sao_al.exe+1EE4698]
+"sao_al.exe"+1C09A1: 4C 89 74 24 38        -  mov [rsp+38],r14
+"sao_al.exe"+1C09A6: 4C 8D 35 CB 3C D2 01  -  lea r14,[sao_al.exe+1EE4678]
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>71</ID>
+          <Description>"100心情状态"</Description>
+          <LastState Activated="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{ 110 心情状态
+}
+
+[ENABLE]
+aobscanmodule(ffadsa_INJECT,sao_al.exe,8B 56 20 E8 B3 00 8D FF)
+alloc(newmem,$1000,"sao_al.exe"+82C0B5)
+
+label(code)
+label(return)
+
+newmem:
+  mov [rsi+20], #100
+  mov [rsi+24], #100
+code:
+  mov edx,[rsi+20]
+  call sao_al.exe+FC170
+  jmp return
+
+ffadsa_INJECT:
+  jmp newmem
+  nop 3
+return:
+registersymbol(ffadsa_INJECT)
+
+[DISABLE]
+ffadsa_INJECT:
+  db 8B 56 20 E8 B3 00 8D FF
+
+unregistersymbol(ffadsa_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+82C0B5
+
+"sao_al.exe"+82C090: 48 8B 01                 -  mov rax,[rcx]
+"sao_al.exe"+82C093: 8B D3                    -  mov edx,ebx
+"sao_al.exe"+82C095: FF 50 08                 -  call qword ptr [rax+08]
+"sao_al.exe"+82C098: 33 D2                    -  xor edx,edx
+"sao_al.exe"+82C09A: 0F B7 CB                 -  movzx ecx,bx
+"sao_al.exe"+82C09D: E8 5E D3 98 FF           -  call sao_al.exe+1B9400
+"sao_al.exe"+82C0A2: 4C 8B F8                 -  mov r15,rax
+"sao_al.exe"+82C0A5: 48 85 C0                 -  test rax,rax
+"sao_al.exe"+82C0A8: 0F 84 9F 05 00 00        -  je sao_al.exe+82C64D
+"sao_al.exe"+82C0AE: 48 8D 88 02 01 00 00     -  lea rcx,[rax+00000102]
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+82C0B5: 8B 56 20                 -  mov edx,[rsi+20]
+"sao_al.exe"+82C0B8: E8 B3 00 8D FF           -  call sao_al.exe+FC170
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+82C0BD: 49 8D 8F 03 01 00 00     -  lea rcx,[r15+00000103]
+"sao_al.exe"+82C0C4: 8B 56 24                 -  mov edx,[rsi+24]
+"sao_al.exe"+82C0C7: E8 A4 00 8D FF           -  call sao_al.exe+FC170
+"sao_al.exe"+82C0CC: 0F 28 C7                 -  movaps xmm0,xmm7
+"sao_al.exe"+82C0CF: F3 0F 10 0D 79 AC 04 01  -  movss xmm1,[sao_al.exe+1876D50]
+"sao_al.exe"+82C0D7: F3 0F 59 C1              -  mulss xmm0,xmm1
+"sao_al.exe"+82C0DB: F3 0F 2C C8              -  cvttss2si ecx,xmm0
+"sao_al.exe"+82C0DF: 01 4E 2C                 -  add [rsi+2C],ecx
+"sao_al.exe"+82C0E2: F3 0F 10 15 32 AE 04 01  -  movss xmm2,[sao_al.exe+1876F1C]
+"sao_al.exe"+82C0EA: 44 0F 2E C7              -  ucomiss xmm8,xmm7
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>72</ID>
+          <Description>"增加好感/top/bottom"</Description>
+          <LastState Activated="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{ 增加好感/top/bottom
+}
+
+[ENABLE]
+aobscanmodule(fhdfgdf_INJECT,sao_al.exe,8B D7 48 8D 8B 0C 01 00 00)
+alloc(newmem,$1000,"sao_al.exe"+1BBBC7)
+
+label(code)
+label(return)
+
+newmem:
+  mov edi,#10000
+code:
+  mov edx,edi
+  lea rcx,[rbx+0000010C]
+  mov [rcx-04],edx
+  jmp return
+
+fhdfgdf_INJECT:
+  jmp newmem
+  nop 4
+return:
+registersymbol(fhdfgdf_INJECT)
+
+[DISABLE]
+fhdfgdf_INJECT:
+  db 8B D7 48 8D 8B 0C 01 00 00
+
+unregistersymbol(fhdfgdf_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+1BBBC7
+
+"sao_al.exe"+1BBBB0: 3B CF                    -  cmp ecx,edi
+"sao_al.exe"+1BBBB2: 0F 4C F9                 -  cmovl edi,ecx
+"sao_al.exe"+1BBBB5: EB 10                    -  jmp sao_al.exe+1BBBC7
+"sao_al.exe"+1BBBB7: 3B EF                    -  cmp ebp,edi
+"sao_al.exe"+1BBBB9: 0F 4F FD                 -  cmovg edi,ebp
+"sao_al.exe"+1BBBBC: 33 C9                    -  xor ecx,ecx
+"sao_al.exe"+1BBBBE: 8B C7                    -  mov eax,edi
+"sao_al.exe"+1BBBC0: 8B F9                    -  mov edi,ecx
+"sao_al.exe"+1BBBC2: 85 C0                    -  test eax,eax
+"sao_al.exe"+1BBBC4: 0F 48 F8                 -  cmovs edi,eax
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+1BBBC7: 8B D7                    -  mov edx,edi
+"sao_al.exe"+1BBBC9: 48 8D 8B 0C 01 00 00     -  lea rcx,[rbx+0000010C]
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+1BBBD0: E8 9B 0A 00 00           -  call sao_al.exe+1BC670
+"sao_al.exe"+1BBBD5: 81 FF 10 27 00 00        -  cmp edi,00002710
+"sao_al.exe"+1BBBDB: 75 3E                    -  jne sao_al.exe+1BBC1B
+"sao_al.exe"+1BBBDD: 48 8B CE                 -  mov rcx,rsi
+"sao_al.exe"+1BBBE0: E8 4B FB FF FF           -  call sao_al.exe+1BB730
+"sao_al.exe"+1BBBE5: 0F BE C8                 -  movsx ecx,al
+"sao_al.exe"+1BBBE8: 83 F9 13                 -  cmp ecx,13
+"sao_al.exe"+1BBBEB: 77 2E                    -  ja sao_al.exe+1BBC1B
+"sao_al.exe"+1BBBED: 8B D1                    -  mov edx,ecx
+"sao_al.exe"+1BBBEF: 41 B8 01 00 00 00        -  mov r8d,00000001
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>75</ID>
+          <Description>"抱住"</Description>
+          <LastState Activated="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{
+ 按e抱住读取心情时
+}
+
+[ENABLE]
+aobscanmodule(dfgrsa_INJECT,sao_al.exe,0F B6 8E 00 01 00 00 80)
+alloc(newmem,$1000,"sao_al.exe"+4A32A2)
+
+label(code)
+label(return)
+
+newmem:
+  mov byte ptr [rsi+00000100],8
+code:
+  movzx ecx,byte ptr [rsi+00000100]
+  jmp return
+
+dfgrsa_INJECT:
+  jmp newmem
+  nop 2
+return:
+registersymbol(dfgrsa_INJECT)
+
+[DISABLE]
+dfgrsa_INJECT:
+  db 0F B6 8E 00 01 00 00
+
+unregistersymbol(dfgrsa_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+4A32A2
+
+"sao_al.exe"+4A327E: 38 1F                 -  cmp [rdi],bl
+"sao_al.exe"+4A3280: 74 05                 -  je sao_al.exe+4A3287
+"sao_al.exe"+4A3282: 83 F8 01              -  cmp eax,01
+"sao_al.exe"+4A3285: 7F 09                 -  jg sao_al.exe+4A3290
+"sao_al.exe"+4A3287: 83 F8 01              -  cmp eax,01
+"sao_al.exe"+4A328A: 0F 85 C7 00 00 00     -  jne sao_al.exe+4A3357
+"sao_al.exe"+4A3290: 0F B7 4C 24 62        -  movzx ecx,word ptr [rsp+62]
+"sao_al.exe"+4A3295: E8 66 7B D1 FF        -  call sao_al.exe+1BAE00
+"sao_al.exe"+4A329A: 84 C0                 -  test al,al
+"sao_al.exe"+4A329C: 0F 84 B5 00 00 00     -  je sao_al.exe+4A3357
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+4A32A2: 0F B6 8E 00 01 00 00  -  movzx ecx,byte ptr [rsi+00000100]
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+4A32A9: 80 F9 06              -  cmp cl,06
+"sao_al.exe"+4A32AC: 0F 82 A5 00 00 00     -  jb sao_al.exe+4A3357
+"sao_al.exe"+4A32B2: 8D 41 FA              -  lea eax,[rcx-06]
+"sao_al.exe"+4A32B5: 3C 01                 -  cmp al,01
+"sao_al.exe"+4A32B7: 76 09                 -  jna sao_al.exe+4A32C2
+"sao_al.exe"+4A32B9: 80 F9 08              -  cmp cl,08
+"sao_al.exe"+4A32BC: 0F 85 95 00 00 00     -  jne sao_al.exe+4A3357
+"sao_al.exe"+4A32C2: 8D 41 F9              -  lea eax,[rcx-07]
+"sao_al.exe"+4A32C5: 3C 01                 -  cmp al,01
+"sao_al.exe"+4A32C7: 0F 87 8A 00 00 00     -  ja sao_al.exe+4A3357
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>74</ID>
+          <Description>"降低心情时"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{ 降低心情时
+}
+
+[ENABLE]
+aobscanmodule(ddggdgr_INJECT,sao_al.exe,C6 83 00 01 00 00 02)
+alloc(newmem,$1000,"sao_al.exe"+4AF5E1)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  mov byte ptr [rbx+00000100],08
+  jmp return
+
+ddggdgr_INJECT:
+  jmp newmem
+  nop 2
+return:
+registersymbol(ddggdgr_INJECT)
+
+[DISABLE]
+ddggdgr_INJECT:
+  db C6 83 00 01 00 00 02
+
+unregistersymbol(ddggdgr_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+4AF5E1
+
+"sao_al.exe"+4AF5A9: 48 8B 0D F8 6A A2 01        -  mov rcx,[sao_al.exe+1ED60A8]
+"sao_al.exe"+4AF5B0: 48 8B 89 88 00 00 00        -  mov rcx,[rcx+00000088]
+"sao_al.exe"+4AF5B7: 48 85 C9                    -  test rcx,rcx
+"sao_al.exe"+4AF5BA: 74 1C                       -  je sao_al.exe+4AF5D8
+"sao_al.exe"+4AF5BC: 8B 97 E0 11 00 00           -  mov edx,[rdi+000011E0]
+"sao_al.exe"+4AF5C2: 44 0F B6 80 00 01 00 00     -  movzx r8d,byte ptr [rax+00000100]
+"sao_al.exe"+4AF5CA: C1 EA 10                    -  shr edx,10
+"sao_al.exe"+4AF5CD: 41 B9 02 00 00 00           -  mov r9d,00000002
+"sao_al.exe"+4AF5D3: E8 48 B9 04 00              -  call sao_al.exe+4FAF20
+"sao_al.exe"+4AF5D8: 66 C7 83 02 01 00 00 00 00  -  mov word ptr [rbx+00000102],0000
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+4AF5E1: C6 83 00 01 00 00 02        -  mov byte ptr [rbx+00000100],02
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+4AF5E8: 48 8B 5C 24 60              -  mov rbx,[rsp+60]
+"sao_al.exe"+4AF5ED: 48 83 C4 40                 -  add rsp,40
+"sao_al.exe"+4AF5F1: 41 5E                       -  pop r14
+"sao_al.exe"+4AF5F3: 5F                          -  pop rdi
+"sao_al.exe"+4AF5F4: 5E                          -  pop rsi
+"sao_al.exe"+4AF5F5: C3                          -  ret 
+"sao_al.exe"+4AF5F6: 41 89 1E                    -  mov [r14],ebx
+"sao_al.exe"+4AF5F9: 48 8B 5C 24 60              -  mov rbx,[rsp+60]
+"sao_al.exe"+4AF5FE: 48 83 C4 40                 -  add rsp,40
+"sao_al.exe"+4AF602: 41 5E                       -  pop r14
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>77</ID>
+          <Description>"被发现时"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{ 被发现时
+}
+
+[ENABLE]
+aobscanmodule(fdreqqwe_INJECT,sao_al.exe,C6 86 00 01 00 00 02 48 8B)
+alloc(newmem,$1000,"sao_al.exe"+1463D3)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  mov byte ptr [rsi+00000100],08
+  jmp return
+
+fdreqqwe_INJECT:
+  jmp newmem
+  nop 2
+return:
+registersymbol(fdreqqwe_INJECT)
+
+[DISABLE]
+fdreqqwe_INJECT:
+  db C6 86 00 01 00 00 02
+
+unregistersymbol(fdreqqwe_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+1463D3
+
+"sao_al.exe"+14639D: 48 8B 89 88 00 00 00        -  mov rcx,[rcx+00000088]
+"sao_al.exe"+1463A4: 48 85 C9                    -  test rcx,rcx
+"sao_al.exe"+1463A7: 74 23                       -  je sao_al.exe+1463CC
+"sao_al.exe"+1463A9: 48 8B 93 F0 00 00 00        -  mov rdx,[rbx+000000F0]
+"sao_al.exe"+1463B0: 41 B9 02 00 00 00           -  mov r9d,00000002
+"sao_al.exe"+1463B6: 44 0F B6 80 00 01 00 00     -  movzx r8d,byte ptr [rax+00000100]
+"sao_al.exe"+1463BE: 8B 92 E0 11 00 00           -  mov edx,[rdx+000011E0]
+"sao_al.exe"+1463C4: C1 EA 10                    -  shr edx,10
+"sao_al.exe"+1463C7: E8 54 4B 3B 00              -  call sao_al.exe+4FAF20
+"sao_al.exe"+1463CC: 66 89 BE 02 01 00 00        -  mov [rsi+00000102],di
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+1463D3: C6 86 00 01 00 00 02        -  mov byte ptr [rsi+00000100],02
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+1463DA: 48 8B 05 C7 FC D8 01        -  mov rax,[sao_al.exe+1ED60A8]
+"sao_al.exe"+1463E1: 48 8B 88 B0 00 00 00        -  mov rcx,[rax+000000B0]
+"sao_al.exe"+1463E8: 48 85 C9                    -  test rcx,rcx
+"sao_al.exe"+1463EB: 74 54                       -  je sao_al.exe+146441
+"sao_al.exe"+1463ED: C7 44 24 28 FF FF FF FF     -  mov [rsp+28],FFFFFFFF
+"sao_al.exe"+1463F5: 4C 8D 45 D7                 -  lea r8,[rbp-29]
+"sao_al.exe"+1463F9: 45 33 C9                    -  xor r9d,r9d
+"sao_al.exe"+1463FC: C7 44 24 20 FF FF FF FF     -  mov [rsp+20],FFFFFFFF
+"sao_al.exe"+146404: BA AE 26 00 00              -  mov edx,000026AE
+"sao_al.exe"+146409: 48 C7 45 D7 FF FF FF FF     -  mov qword ptr [rbp-29],FFFFFFFFFFFFFFFF
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>78</ID>
+          <Description>"锁心情状态"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{ 启动后不会增加也不会减少
+}
+
+define(address,"sao_al.exe"+4FAF20)
+define(bytes,40 53 48 83 EC 20)
+
+[ENABLE]
+assert(address,bytes)
+
+
+address:
+ db C3 90 48 83 EC 20
+
+[DISABLE]
+address:
+  db bytes
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+4FAF20
+
+"sao_al.exe"+4FAF16: CC                             -  int 3 
+"sao_al.exe"+4FAF17: CC                             -  int 3 
+"sao_al.exe"+4FAF18: CC                             -  int 3 
+"sao_al.exe"+4FAF19: CC                             -  int 3 
+"sao_al.exe"+4FAF1A: CC                             -  int 3 
+"sao_al.exe"+4FAF1B: CC                             -  int 3 
+"sao_al.exe"+4FAF1C: CC                             -  int 3 
+"sao_al.exe"+4FAF1D: CC                             -  int 3 
+"sao_al.exe"+4FAF1E: CC                             -  int 3 
+"sao_al.exe"+4FAF1F: CC                             -  int 3 
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+4FAF20: 40 53                          -  push rbx
+"sao_al.exe"+4FAF22: 48 83 EC 20                    -  sub rsp,20
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+4FAF26: 48 8B 01                       -  mov rax,[rcx]
+"sao_al.exe"+4FAF29: 48 8B 98 80 7C 00 00           -  mov rbx,[rax+00007C80]
+"sao_al.exe"+4FAF30: 48 85 DB                       -  test rbx,rbx
+"sao_al.exe"+4FAF33: 0F 84 A4 00 00 00              -  je sao_al.exe+4FAFDD
+"sao_al.exe"+4FAF39: 80 B8 7C 7C 00 00 00           -  cmp byte ptr [rax+00007C7C],00
+"sao_al.exe"+4FAF40: 0F 85 97 00 00 00              -  jne sao_al.exe+4FAFDD
+"sao_al.exe"+4FAF46: 48 81 C3 B0 2F 02 00           -  add rbx,00022FB0
+"sao_al.exe"+4FAF4D: 83 BB E8 07 00 00 00           -  cmp dword ptr [rbx+000007E8],00
+"sao_al.exe"+4FAF54: 0F 85 83 00 00 00              -  jne sao_al.exe+4FAFDD
+"sao_al.exe"+4FAF5A: 89 93 D4 0A 00 00              -  mov [rbx+00000AD4],edx
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>76</ID>
+          <Description>"心情状态"</Description>
+          <LastState Value="8" RealAddress="141F75008"/>
+          <VariableType>Byte</VariableType>
+          <Address>0000000141F74F08+100</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>98</ID>
+      <Description>"锁时间 base"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{
+  锁时间 24小时制
+  小时：20 *60*60 = 72000
+  分钟: 30 *60 = 1800
+  72000+1800 = 73800 = 20:30
+}
+
+[ENABLE]
+aobscanmodule(dfdfsdr_INJECT,sao_al.exe,F3 0F 11 4B 30 72 0C)
+alloc(newmem,$1000,"sao_al.exe"+4EFD9B)
+
+label(code)
+label(return)
+label(pTimer)
+
+newmem:
+  mov [pTimer],rbx
+code:
+  // movss [rbx+30],xmm1
+  nop
+  nop
+  nop
+  nop
+  nop
+  jmp return
+
+pTimer:
+ dq 0
+
+dfdfsdr_INJECT:
+  jmp newmem
+return:
+
+registersymbol(dfdfsdr_INJECT pTimer)
+
+[DISABLE]
+dfdfsdr_INJECT:
+  db F3 0F 11 4B 30
+
+unregistersymbol(dfdfsdr_INJECT pTimer)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+4EFD9B
+
+"sao_al.exe"+4EFD64: 75 0A                    -  jne sao_al.exe+4EFD70
+"sao_al.exe"+4EFD66: F3 0F 10 0D 5A 82 62 01  -  movss xmm1,[sao_al.exe+1B17FC8]
+"sao_al.exe"+4EFD6E: EB 0C                    -  jmp sao_al.exe+4EFD7C
+"sao_al.exe"+4EFD70: F3 0F 10 0D B0 81 62 01  -  movss xmm1,[sao_al.exe+1B17F28]
+"sao_al.exe"+4EFD78: F3 0F 59 CE              -  mulss xmm1,xmm6
+"sao_al.exe"+4EFD7C: 48 8B 1D 4D BC 9E 01     -  mov rbx,[sao_al.exe+1EDB9D0]
+"sao_al.exe"+4EFD83: F3 0F 59 C8              -  mulss xmm1,xmm0
+"sao_al.exe"+4EFD87: F3 0F 59 0D 39 76 38 01  -  mulss xmm1,[sao_al.exe+18773C8]
+"sao_al.exe"+4EFD8F: F3 0F 58 4B 30           -  addss xmm1,[rbx+30]
+"sao_al.exe"+4EFD94: 0F 2F 0D 35 79 38 01     -  comiss xmm1,[sao_al.exe+18776D0]
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+4EFD9B: F3 0F 11 4B 30           -  movss [rbx+30],xmm1
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+4EFDA0: 72 0C                    -  jb sao_al.exe+4EFDAE
+"sao_al.exe"+4EFDA2: 89 7B 30                 -  mov [rbx+30],edi
+"sao_al.exe"+4EFDA5: C6 05 06 BC 9E 01 01     -  mov byte ptr [sao_al.exe+1EDB9B2],01
+"sao_al.exe"+4EFDAC: EB 3B                    -  jmp sao_al.exe+4EFDE9
+"sao_al.exe"+4EFDAE: 0F 2F 0D DF 78 38 01     -  comiss xmm1,[sao_al.exe+1877694]
+"sao_al.exe"+4EFDB5: 72 32                    -  jb sao_al.exe+4EFDE9
+"sao_al.exe"+4EFDB7: 40 38 3D F4 BB 9E 01     -  cmp [sao_al.exe+1EDB9B2],dil
+"sao_al.exe"+4EFDBE: 74 29                    -  je sao_al.exe+4EFDE9
+"sao_al.exe"+4EFDC0: E8 2B 0D 00 00           -  call sao_al.exe+4F0AF0
+"sao_al.exe"+4EFDC5: 45 33 C0                 -  xor r8d,r8d
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>99</ID>
+          <Description>"time"</Description>
+          <LastState Value="43200" RealAddress="1F038230"/>
+          <VariableType>Float</VariableType>
+          <Address>[pTimer]+30</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>100</ID>
+          <Description>"设置时间"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{$lua}
+
+if syntaxcheck then return end
+
+[ENABLE]
+
+-- not pTimer pointer
+if readInteger('pTimer') == nil then return end
+
+local inputTime = inputQuery('设置时间', '格式: hh:mm', '05:00')
+if inputTime == nil or inputTime == '' then return end
+
+local timer = 0
+
+-- split
+local arr = {}
+for i in string.gmatch(inputTime, "(%d.)") do
+   table.insert(arr, i)
+end
+
+-- hh
+timer = timer + (arr[1] * 60 * 60)
+
+-- mm
+timer = timer + (arr[2] * 60)
+
+
+writeFloat('[pTimer]+30', timer)
+
+arr = nil
+inputTime = nil
+timer = 0
+
+[DISABLE]
+
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry Color="20000000">
+      <Description>玩家属性</Description>
+      <AddressString>sao_al.exe+52CE30</AddressString>
+      <Before>
+        <Byte>5B</Byte>
+        <Byte>5D</Byte>
+        <Byte>C3</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+        <Byte>EC</Byte>
+        <Byte>18</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>C7</Byte>
+        <Byte>04</Byte>
+        <Byte>24</Byte>
+        <Byte>FE</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>增加好感度/center</Description>
+      <AddressString>sao_al.exe+1BC145</AddressString>
+      <Before>
+        <Byte>83</Byte>
+        <Byte>C4</Byte>
+        <Byte>40</Byte>
+        <Byte>5F</Byte>
+        <Byte>C3</Byte>
+      </Before>
+      <Actual>
+        <Byte>66</Byte>
+        <Byte>89</Byte>
+        <Byte>11</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>C3</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>增加好感/top/bottom</Description>
+      <AddressString>sao_al.exe+1BC6EB</AddressString>
+      <Before>
+        <Byte>83</Byte>
+        <Byte>C4</Byte>
+        <Byte>40</Byte>
+        <Byte>5F</Byte>
+        <Byte>C3</Byte>
+      </Before>
+      <Actual>
+        <Byte>66</Byte>
+        <Byte>89</Byte>
+        <Byte>11</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>C3</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>心情状态</Description>
+      <AddressString>sao_al.exe+FC1E1</AddressString>
+      <Before>
+        <Byte>83</Byte>
+        <Byte>C4</Byte>
+        <Byte>40</Byte>
+        <Byte>5B</Byte>
+        <Byte>C3</Byte>
+      </Before>
+      <Actual>
+        <Byte>88</Byte>
+        <Byte>11</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>C3</Byte>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>替换了 call sao_al.exe+145E10</Description>
+      <AddressString>sao_al.exe+338EEE</AddressString>
+      <Before>
+        <Byte>06</Byte>
+        <Byte>00</Byte>
+        <Byte>48</Byte>
+        <Byte>03</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>1D</Byte>
+        <Byte>CF</Byte>
+        <Byte>E0</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>81</Byte>
+        <Byte>C3</Byte>
+        <Byte>48</Byte>
+        <Byte>03</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>替换了 movss [rbx+30],xmm1</Description>
+      <AddressString>sao_al.exe+4EFD9B</AddressString>
+      <Before>
+        <Byte>0D</Byte>
+        <Byte>35</Byte>
+        <Byte>79</Byte>
+        <Byte>38</Byte>
+        <Byte>01</Byte>
+      </Before>
+      <Actual>
+        <Byte>F3</Byte>
+        <Byte>0F</Byte>
+        <Byte>11</Byte>
+        <Byte>4B</Byte>
+        <Byte>30</Byte>
+      </Actual>
+      <After>
+        <Byte>72</Byte>
+        <Byte>0C</Byte>
+        <Byte>89</Byte>
+        <Byte>7B</Byte>
+        <Byte>30</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>获取任务材料时</Description>
+      <AddressString>sao_al.exe+7F6632</AddressString>
+      <Before>
+        <Byte>EB</Byte>
+        <Byte>06</Byte>
+        <Byte>8D</Byte>
+        <Byte>04</Byte>
+        <Byte>29</Byte>
+      </Before>
+      <Actual>
+        <Byte>89</Byte>
+        <Byte>43</Byte>
+        <Byte>08</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>5C</Byte>
+        <Byte>24</Byte>
+        <Byte>50</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>call 获取任务材料</Description>
+      <AddressString>sao_al.exe+8120F8</AddressString>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>8B</Byte>
+        <Byte>D6</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>43</Byte>
+        <Byte>44</Byte>
+        <Byte>FE</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>45</Byte>
+        <Byte>18</Byte>
+        <Byte>0F</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>call check</Description>
+      <AddressString>sao_al.exe+81213A</AddressString>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>D6</Byte>
+        <Byte>0F</Byte>
+        <Byte>BF</Byte>
+        <Byte>C8</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>A1</Byte>
+        <Byte>45</Byte>
+        <Byte>FE</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+        <Byte>74</Byte>
+        <Byte>59</Byte>
+        <Byte>83</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>判断</Description>
+      <AddressString>sao_al.exe+7F6728</AddressString>
+      <Before>
+        <Byte>C7</Byte>
+        <Byte>4D</Byte>
+        <Byte>8D</Byte>
+        <Byte>0C</Byte>
+        <Byte>B9</Byte>
+      </Before>
+      <Actual>
+        <Byte>41</Byte>
+        <Byte>39</Byte>
+        <Byte>71</Byte>
+        <Byte>08</Byte>
+      </Actual>
+      <After>
+        <Byte>72</Byte>
+        <Byte>12</Byte>
+        <Byte>B0</Byte>
+        <Byte>01</Byte>
+        <Byte>48</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+  <Structures StructVersion="2">
+    <Structure Name="未命名的结构" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数">
+          <Structure Name="自动创建 从 1417E01F0" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="0" Vartype="Pointer" Bytesize="8" RLECount="38" DisplayMethod="无符号整数"/>
+              <Element Offset="304" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="307" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="309" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="312" Vartype="Pointer" Bytesize="8" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="328" Vartype="String" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="332" Vartype="Double" Bytesize="8" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="356" Vartype="4 Bytes" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="360" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="368" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="371" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="373" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="375" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="377" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="379" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="381" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="384" Vartype="Pointer" Bytesize="8" RLECount="5" DisplayMethod="无符号整数"/>
+              <Element Offset="424" Vartype="String" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="428" Vartype="Double" Bytesize="8" RLECount="26" DisplayMethod="无符号整数"/>
+              <Element Offset="636" Vartype="4 Bytes" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="640" Vartype="Pointer" Bytesize="8" RLECount="36" DisplayMethod="无符号整数"/>
+              <Element Offset="928" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="930" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="932" Vartype="Double" Bytesize="8" RLECount="6" DisplayMethod="无符号整数"/>
+              <Element Offset="980" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="988" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="996" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1004" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1012" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1020" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1028" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1036" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1044" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1052" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1060" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1068" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1076" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1084" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1092" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="1104" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1112" Vartype="4 Bytes" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="1116" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1124" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1132" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1140" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1148" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1156" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1164" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1172" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1180" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1188" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1196" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1204" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1212" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1220" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1228" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1236" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1244" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1252" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1260" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1268" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1276" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1284" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1292" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1300" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1308" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1316" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1324" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1332" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1340" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1348" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1356" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1364" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1372" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1380" Vartype="4 Bytes" Bytesize="4" RLECount="5" DisplayMethod="无符号整数"/>
+              <Element Offset="1400" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1408" Vartype="String" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="1412" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1420" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1428" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1436" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1444" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1452" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1460" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1468" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1476" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1484" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1492" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1500" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1508" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1516" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1524" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="1536" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1544" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="1547" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1549" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1551" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1553" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1555" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1557" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="1560" Vartype="Pointer" Bytesize="8" RLECount="13" DisplayMethod="无符号整数"/>
+              <Element Offset="1664" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="1667" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1669" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="1672" Vartype="Pointer" Bytesize="8" RLECount="10" DisplayMethod="无符号整数"/>
+              <Element Offset="1752" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="1755" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1757" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="1760" Vartype="Pointer" Bytesize="8" RLECount="7" DisplayMethod="无符号整数"/>
+              <Element Offset="1816" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1818" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1820" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1828" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1836" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1844" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1852" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1860" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1868" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1876" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="1884" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="1892" Vartype="4 Bytes" Bytesize="4" RLECount="5" DisplayMethod="无符号整数"/>
+              <Element Offset="1912" Vartype="Pointer" Bytesize="8" RLECount="72" DisplayMethod="无符号整数"/>
+              <Element Offset="2488" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2491" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2493" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2496" Vartype="Pointer" Bytesize="8" RLECount="4" DisplayMethod="无符号整数"/>
+              <Element Offset="2528" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2531" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2533" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2536" Vartype="Pointer" Bytesize="8" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2552" Vartype="String" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="2556" Vartype="Double" Bytesize="8" RLECount="34" DisplayMethod="无符号整数"/>
+              <Element Offset="2828" Vartype="4 Bytes" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="2832" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="2840" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2843" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2845" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2847" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2849" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2851" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2853" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2856" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="2864" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2867" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2869" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2871" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2873" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2875" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2877" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2880" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="2888" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2891" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2893" Vartype="Byte" Bytesize="1" RLECount="6" DisplayMethod="无符号整数"/>
+              <Element Offset="2899" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2901" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2904" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="2912" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2915" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="2917" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2920" Vartype="Pointer" Bytesize="8" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="2944" Vartype="String" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="2948" Vartype="Double" Bytesize="8" RLECount="6" DisplayMethod="无符号整数"/>
+              <Element Offset="2996" Vartype="4 Bytes" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="3000" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3008" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3011" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3013" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3015" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3017" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3019" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3021" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3024" Vartype="Pointer" Bytesize="8" RLECount="12" DisplayMethod="无符号整数"/>
+              <Element Offset="3120" Vartype="String" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="3124" Vartype="Double" Bytesize="8" RLECount="20" DisplayMethod="无符号整数"/>
+              <Element Offset="3284" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3292" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3300" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3308" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3316" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3324" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3332" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3340" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3348" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3356" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3364" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3372" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3380" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3388" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3396" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3404" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3412" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3420" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3428" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3436" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3444" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3452" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3460" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3468" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3476" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3484" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3492" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3500" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3508" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3516" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3524" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3532" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3540" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3548" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3556" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3568" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3576" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3579" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3581" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3584" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3592" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3595" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3597" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3600" Vartype="Pointer" Bytesize="8" RLECount="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3664" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3667" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3669" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3671" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3673" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3675" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3677" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3680" Vartype="Pointer" Bytesize="8" RLECount="5" DisplayMethod="无符号整数"/>
+              <Element Offset="3720" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3723" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3725" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3728" Vartype="Pointer" Bytesize="8" RLECount="7" DisplayMethod="无符号整数"/>
+              <Element Offset="3784" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3787" Vartype="2 Bytes" Bytesize="2" DisplayMethod="无符号整数"/>
+              <Element Offset="3789" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="3792" Vartype="Pointer" Bytesize="8" RLECount="5" DisplayMethod="无符号整数"/>
+              <Element Offset="3832" Vartype="String" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="3836" Vartype="Double" Bytesize="8" RLECount="13" DisplayMethod="无符号整数"/>
+              <Element Offset="3940" Vartype="4 Bytes" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="3944" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="3952" Vartype="String" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="3956" Vartype="Double" Bytesize="8" RLECount="7" DisplayMethod="无符号整数"/>
+              <Element Offset="4012" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="4020" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="4028" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="无符号整数"/>
+              <Element Offset="4036" Vartype="Double" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="4044" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="4056" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+              <Element Offset="4064" Vartype="String" Bytesize="4" DisplayMethod="无符号整数"/>
+              <Element Offset="4068" Vartype="Double" Bytesize="8" RLECount="3" DisplayMethod="无符号整数"/>
+              <Element Offset="4092" Vartype="4 Bytes" Bytesize="4" DisplayMethod="无符号整数"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" RLECount="13" DisplayMethod="无符号整数"/>
+        <Element Offset="60" Vartype="String" Bytesize="6" DisplayMethod="无符号整数"/>
+        <Element Offset="66" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="无符号整数"/>
+        <Element Offset="68" Vartype="4 Bytes" Bytesize="4" RLECount="13" DisplayMethod="无符号整数"/>
+        <Element Offset="120" Vartype="Pointer" Bytesize="8" DisplayMethod="无符号整数"/>
+        <Element Offset="128" Vartype="4 Bytes" Bytesize="4" RLECount="992" DisplayMethod="无符号整数"/>
+      </Elements>
+    </Structure>
+  </Structures>
+  <Comments>0000000000000000
+00007fffffffffff
+0000000025ffffff
+陪睡：
+1. 将时间设置到 01:00
+2. 刷好感度
+3. 到帐篷门前抱起，进入帐篷
+rbx
+rbp
+rsi
+sao_al.exe+8120ED - 0FBF C8               - movsx ecx,ax {221}
+sao_al.exe+8120F0 - 41 B8 01000000        - mov r8d,00000001 {1}
+sao_al.exe+8120F6 - 8B D6                 - mov edx,esi {0}
+sao_al.exe+8120F8 - E8 4344FEFF           - call sao_al.exe+7F6540
+</Comments>
+  <DisassemblerComments>
+    <DisassemblerComment>
+      <Address>"sao_al.exe"+7F6728</Address>
+      <Comment>小于就跳
+</Comment>
+    </DisassemblerComment>
+    <DisassemblerComment>
+      <Address>"sao_al.exe"+7F672E</Address>
+      <Comment>返回true
+</Comment>
+    </DisassemblerComment>
+  </DisassemblerComments>
+</CheatTable>
