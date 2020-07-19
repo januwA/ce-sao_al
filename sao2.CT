@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="31">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"心情进度条"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(fasdasda_INJECT,sao_al.exe,F3 0F 11 46 28 0F) // should be unique
+alloc(newmem,$1000,"sao_al.exe"+82A811)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  mov [rsi+28],(float)100
+  jmp return
+
+fasdasda_INJECT:
+  jmp newmem
+return:
+registersymbol(fasdasda_INJECT)
+
+[DISABLE]
+
+fasdasda_INJECT:
+  db F3 0F 11 46 28
+
+unregistersymbol(fasdasda_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+82A811
+
+"sao_al.exe"+82A7E1: F3 0F 10 86 B8 00 00 00  -  movss xmm0,[rsi+000000B8]
+"sao_al.exe"+82A7E9: 0F 2F C6                 -  comiss xmm0,xmm6
+"sao_al.exe"+82A7EC: 76 0D                    -  jna sao_al.exe+82A7FB
+"sao_al.exe"+82A7EE: F3 41 0F 5C CF           -  subss xmm1,xmm15
+"sao_al.exe"+82A7F3: F3 0F 11 8E 04 01 00 00  -  movss [rsi+00000104],xmm1
+"sao_al.exe"+82A7FB: F3 0F 10 46 28           -  movss xmm0,[rsi+28]
+"sao_al.exe"+82A800: EB 0A                    -  jmp sao_al.exe+82A80C
+"sao_al.exe"+82A802: F3 0F 10 46 28           -  movss xmm0,[rsi+28]
+"sao_al.exe"+82A807: F3 41 0F 5C C2           -  subss xmm0,xmm10
+"sao_al.exe"+82A80C: F3 41 0F 5C C0           -  subss xmm0,xmm8
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+82A811: F3 0F 11 46 28           -  movss [rsi+28],xmm0
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+82A816: 0F 2F F0                 -  comiss xmm6,xmm0
+"sao_al.exe"+82A819: 76 07                    -  jna sao_al.exe+82A822
+"sao_al.exe"+82A81B: 44 89 76 28              -  mov [rsi+28],r14d
+"sao_al.exe"+82A81F: 0F 57 C0                 -  xorps xmm0,xmm0
+"sao_al.exe"+82A822: 4C 8B 0D 7F B8 6A 01     -  mov r9,[sao_al.exe+1ED60A8]
+"sao_al.exe"+82A829: 49 8B 81 88 00 00 00     -  mov rax,[r9+00000088]
+"sao_al.exe"+82A830: 48 85 C0                 -  test rax,rax
+"sao_al.exe"+82A833: 0F 84 AE 00 00 00        -  je sao_al.exe+82A8E7
+"sao_al.exe"+82A839: 48 8B 08                 -  mov rcx,[rax]
+"sao_al.exe"+82A83C: 48 8B 81 80 7C 00 00     -  mov rax,[rcx+00007C80]
+}
+</AssemblerScript>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Toggle Activation</Action>
+          <Keys>
+            <Key>112</Key>
+          </Keys>
+          <Description>锁心情进度条</Description>
+          <ID>0</ID>
+          <ActivateSound>Activate</ActivateSound>
+          <DeactivateSound>Deactivate</DeactivateSound>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>13</ID>
+      <Description>"合并好感度脚本"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+// 好感1
+aobscanmodule(dsdsfd_INJECT,sao_al.exe,44 3B C2 41 0F 4C D0 E8 36)
+alloc(newmem_1,$1000,"sao_al.exe"+1C097E)
+
+label(return_1)
+
+newmem_1:
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  nop
+  jmp return_1
+
+dsdsfd_INJECT:
+  jmp newmem_1
+  nop 2
+return_1:
+registersymbol(dsdsfd_INJECT)
+
+// 好感2
+aobscanmodule(sasdads_INJECT,sao_al.exe,8B D7 48 8D 8B 0C 01 00 00)
+alloc(newmem_2,$1000,"sao_al.exe"+1BBBC7)
+
+label(return_2)
+
+newmem_2:
+  mov edx,eax
+  lea rcx,[rbx+0000010C]
+  mov [rbx+00000108],edx
+  jmp return_2
+
+sasdads_INJECT:
+  jmp newmem_2
+  nop 4
+return_2:
+registersymbol(sasdads_INJECT)
+ 
+ 
+[DISABLE]
+// 好感1
+dsdsfd_INJECT:
+  db 44 3B C2 41 0F 4C D0
+
+unregistersymbol(dsdsfd_INJECT)
+dealloc(newmem_1)
+
+// 好感2
+sasdads_INJECT:
+  db 8B D7 48 8D 8B 0C 01 00 00
+
+unregistersymbol(sasdads_INJECT)
+dealloc(newmem_2)
+
+
+{
+好感1
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+1C097E
+
+"sao_al.exe"+1C0957: 48 8B D0              -  mov rdx,rax
+"sao_al.exe"+1C095A: 48 89 74 24 30        -  mov [rsp+30],rsi
+"sao_al.exe"+1C095F: 0F B7 CF              -  movzx ecx,di
+"sao_al.exe"+1C0962: E8 99 00 00 00        -  call sao_al.exe+1C0A00
+"sao_al.exe"+1C0967: 45 33 C0              -  xor r8d,r8d
+"sao_al.exe"+1C096A: 48 8D 8B EC 00 00 00  -  lea rcx,[rbx+000000EC]
+"sao_al.exe"+1C0971: BA 0F 27 00 00        -  mov edx,0000270F
+"sao_al.exe"+1C0976: 85 ED                 -  test ebp,ebp
+"sao_al.exe"+1C0978: 8B F0                 -  mov esi,eax
+"sao_al.exe"+1C097A: 44 0F 4F C5           -  cmovg r8d,ebp
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+1C097E: 44 3B C2              -  cmp r8d,edx
+"sao_al.exe"+1C0981: 41 0F 4C D0           -  cmovl edx,r8d
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+1C0985: E8 36 B7 FF FF        -  call sao_al.exe+1BC0C0
+"sao_al.exe"+1C098A: 48 8B D3              -  mov rdx,rbx
+"sao_al.exe"+1C098D: 0F B7 CF              -  movzx ecx,di
+"sao_al.exe"+1C0990: E8 6B 00 00 00        -  call sao_al.exe+1C0A00
+"sao_al.exe"+1C0995: 8B E8                 -  mov ebp,eax
+"sao_al.exe"+1C0997: 3B F0                 -  cmp esi,eax
+"sao_al.exe"+1C0999: 74 47                 -  je sao_al.exe+1C09E2
+"sao_al.exe"+1C099B: 8B 0D F7 3C D2 01     -  mov ecx,[sao_al.exe+1EE4698]
+"sao_al.exe"+1C09A1: 4C 89 74 24 38        -  mov [rsp+38],r14
+"sao_al.exe"+1C09A6: 4C 8D 35 CB 3C D2 01  -  lea r14,[sao_al.exe+1EE4678]
+}
+
+{
+好感2
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+1BBBC7
+
+"sao_al.exe"+1BBBB0: 3B CF                    -  cmp ecx,edi
+"sao_al.exe"+1BBBB2: 0F 4C F9                 -  cmovl edi,ecx
+"sao_al.exe"+1BBBB5: EB 10                    -  jmp sao_al.exe+1BBBC7
+"sao_al.exe"+1BBBB7: 3B EF                    -  cmp ebp,edi
+"sao_al.exe"+1BBBB9: 0F 4F FD                 -  cmovg edi,ebp
+"sao_al.exe"+1BBBBC: 33 C9                    -  xor ecx,ecx
+"sao_al.exe"+1BBBBE: 8B C7                    -  mov eax,edi
+"sao_al.exe"+1BBBC0: 8B F9                    -  mov edi,ecx
+"sao_al.exe"+1BBBC2: 85 C0                    -  test eax,eax
+"sao_al.exe"+1BBBC4: 0F 48 F8                 -  cmovs edi,eax
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+1BBBC7: 8B D7                    -  mov edx,edi
+"sao_al.exe"+1BBBC9: 48 8D 8B 0C 01 00 00     -  lea rcx,[rbx+0000010C]
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+1BBBD0: E8 9B 0A 00 00           -  call sao_al.exe+1BC670
+"sao_al.exe"+1BBBD5: 81 FF 10 27 00 00        -  cmp edi,00002710
+"sao_al.exe"+1BBBDB: 75 3E                    -  jne sao_al.exe+1BBC1B
+"sao_al.exe"+1BBBDD: 48 8B CE                 -  mov rcx,rsi
+"sao_al.exe"+1BBBE0: E8 4B FB FF FF           -  call sao_al.exe+1BB730
+"sao_al.exe"+1BBBE5: 0F BE C8                 -  movsx ecx,al
+"sao_al.exe"+1BBBE8: 83 F9 13                 -  cmp ecx,13
+"sao_al.exe"+1BBBEB: 77 2E                    -  ja sao_al.exe+1BBC1B
+"sao_al.exe"+1BBBED: 8B D1                    -  mov edx,ecx
+"sao_al.exe"+1BBBEF: 41 B8 01 00 00 00        -  mov r8d,00000001
+}
+</AssemblerScript>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Toggle Activation</Action>
+          <Keys>
+            <Key>113</Key>
+          </Keys>
+          <Description>满好感度</Description>
+          <ID>0</ID>
+          <ActivateSound>Activate</ActivateSound>
+          <DeactivateSound>Deactivate</DeactivateSound>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>19</ID>
+      <Description>"合并心情状态"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+// 1
+// F 读取好感度时
+aobscanmodule(dfsdfsdf_INJECT,sao_al.exe,41 0F B6 8E 00 01 00 00)
+alloc(newmem_1,$1000,"sao_al.exe"+82ACC8)
+
+label(return_1)
+
+newmem_1:
+  mov byte ptr [r14+00000100], 08
+  movzx ecx,byte ptr [r14+00000100]
+  jmp return_1
+
+dfsdfsdf_INJECT:
+  jmp newmem_1
+  nop 3
+return_1:
+registersymbol(dfsdfsdf_INJECT)
+
+
+// 2
+// 抱住读取时
+aobscanmodule(fgrgr_INJECT,sao_al.exe,0F B6 8E 00 01 00 00 80)
+alloc(newmem_2,$1000,"sao_al.exe"+4A32A2)
+
+label(return_2)
+
+newmem_2:
+  mov byte ptr [rsi+00000100],08
+  movzx ecx,byte ptr [rsi+00000100]
+  jmp return_2
+
+fgrgr_INJECT:
+  jmp newmem_2
+  nop 2
+return_2:
+registersymbol(fgrgr_INJECT)
+
+
+// 3
+// 牵手读取时
+aobscanmodule(fggrg_INJECT,sao_al.exe,44 0F B6 86 00 01 00 00 41)
+alloc(newmem_3,$1000,"sao_al.exe"+4A28B2)
+
+label(return_3)
+
+newmem_3:
+  mov byte ptr [rsi+00000100],08
+  movzx r8d,byte ptr [rsi+00000100]
+  jmp return_3
+
+fggrg_INJECT:
+  jmp newmem_3
+  nop 3
+return_3:
+registersymbol(fggrg_INJECT)
+
+[DISABLE]
+// 1
+dfsdfsdf_INJECT:
+  db 41 0F B6 8E 00 01 00 00
+unregistersymbol(dfsdfsdf_INJECT)
+dealloc(newmem_1)
+
+// 2
+fgrgr_INJECT:
+  db 0F B6 8E 00 01 00 00
+unregistersymbol(fgrgr_INJECT)
+dealloc(newmem_2)
+
+
+// 3
+fggrg_INJECT:
+  db 44 0F B6 86 00 01 00 00
+unregistersymbol(fggrg_INJECT)
+dealloc(newmem_3)
+
+
+{
+// 1
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+82ACC8
+
+"sao_al.exe"+82ACA4: 89 75 AB                 -  mov [rbp-55],esi
+"sao_al.exe"+82ACA7: 48 8B 8B C8 00 00 00     -  mov rcx,[rbx+000000C8]
+"sao_al.exe"+82ACAE: 48 83 C1 08              -  add rcx,08
+"sao_al.exe"+82ACB2: 41 8D 7F FE              -  lea edi,[r15-02]
+"sao_al.exe"+82ACB6: 48 8B 01                 -  mov rax,[rcx]
+"sao_al.exe"+82ACB9: 48 8D 55 AB              -  lea rdx,[rbp-55]
+"sao_al.exe"+82ACBD: FF 50 10                 -  call qword ptr [rax+10]
+"sao_al.exe"+82ACC0: 48 85 C0                 -  test rax,rax
+"sao_al.exe"+82ACC3: 74 03                    -  je sao_al.exe+82ACC8
+"sao_al.exe"+82ACC5: 8B 78 04                 -  mov edi,[rax+04]
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+82ACC8: 41 0F B6 8E 00 01 00 00  -  movzx ecx,byte ptr [r14+00000100]
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+82ACD0: 8D 41 FD                 -  lea eax,[rcx-03]
+"sao_al.exe"+82ACD3: 83 F8 05                 -  cmp eax,05
+"sao_al.exe"+82ACD6: 0F 46 F9                 -  cmovbe edi,ecx
+"sao_al.exe"+82ACD9: 89 7B 18                 -  mov [rbx+18],edi
+"sao_al.exe"+82ACDC: 89 7B 1C                 -  mov [rbx+1C],edi
+"sao_al.exe"+82ACDF: 45 33 ED                 -  xor r13d,r13d
+"sao_al.exe"+82ACE2: 4C 89 6B 20              -  mov [rbx+20],r13
+"sao_al.exe"+82ACE6: C7 43 28 00 00 C8 42     -  mov [rbx+28],42C80000
+"sao_al.exe"+82ACED: 44 0F 28 05 AB 71 D0 01  -  movaps xmm8,[sao_al.exe+2531EA0]
+"sao_al.exe"+82ACF5: 44 0F 28 0D 23 71 D0 01  -  movaps xmm9,[sao_al.exe+2531E20]
+}
+
+{
+// 2
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+4A32A2
+
+"sao_al.exe"+4A327E: 38 1F                 -  cmp [rdi],bl
+"sao_al.exe"+4A3280: 74 05                 -  je sao_al.exe+4A3287
+"sao_al.exe"+4A3282: 83 F8 01              -  cmp eax,01
+"sao_al.exe"+4A3285: 7F 09                 -  jg sao_al.exe+4A3290
+"sao_al.exe"+4A3287: 83 F8 01              -  cmp eax,01
+"sao_al.exe"+4A328A: 0F 85 C7 00 00 00     -  jne sao_al.exe+4A3357
+"sao_al.exe"+4A3290: 0F B7 4C 24 62        -  movzx ecx,word ptr [rsp+62]
+"sao_al.exe"+4A3295: E8 66 7B D1 FF        -  call sao_al.exe+1BAE00
+"sao_al.exe"+4A329A: 84 C0                 -  test al,al
+"sao_al.exe"+4A329C: 0F 84 B5 00 00 00     -  je sao_al.exe+4A3357
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+4A32A2: 0F B6 8E 00 01 00 00  -  movzx ecx,byte ptr [rsi+00000100]
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+4A32A9: 80 F9 06              -  cmp cl,06
+"sao_al.exe"+4A32AC: 0F 82 A5 00 00 00     -  jb sao_al.exe+4A3357
+"sao_al.exe"+4A32B2: 8D 41 FA              -  lea eax,[rcx-06]
+"sao_al.exe"+4A32B5: 3C 01                 -  cmp al,01
+"sao_al.exe"+4A32B7: 76 09                 -  jna sao_al.exe+4A32C2
+"sao_al.exe"+4A32B9: 80 F9 08              -  cmp cl,08
+"sao_al.exe"+4A32BC: 0F 85 95 00 00 00     -  jne sao_al.exe+4A3357
+"sao_al.exe"+4A32C2: 8D 41 F9              -  lea eax,[rcx-07]
+"sao_al.exe"+4A32C5: 3C 01                 -  cmp al,01
+"sao_al.exe"+4A32C7: 0F 87 8A 00 00 00     -  ja sao_al.exe+4A3357
+}
+
+
+{
+// 3
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+4A28B2
+
+"sao_al.exe"+4A288E: 38 1F                    -  cmp [rdi],bl
+"sao_al.exe"+4A2890: 74 05                    -  je sao_al.exe+4A2897
+"sao_al.exe"+4A2892: 83 F8 01                 -  cmp eax,01
+"sao_al.exe"+4A2895: 7F 09                    -  jg sao_al.exe+4A28A0
+"sao_al.exe"+4A2897: 83 F8 01                 -  cmp eax,01
+"sao_al.exe"+4A289A: 0F 85 C2 00 00 00        -  jne sao_al.exe+4A2962
+"sao_al.exe"+4A28A0: 0F B7 4C 24 62           -  movzx ecx,word ptr [rsp+62]
+"sao_al.exe"+4A28A5: E8 56 85 D1 FF           -  call sao_al.exe+1BAE00
+"sao_al.exe"+4A28AA: 84 C0                    -  test al,al
+"sao_al.exe"+4A28AC: 0F 84 B0 00 00 00        -  je sao_al.exe+4A2962
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+4A28B2: 44 0F B6 86 00 01 00 00  -  movzx r8d,byte ptr [rsi+00000100]
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+4A28BA: 41 F6 C0 FD              -  test r8l,-03
+"sao_al.exe"+4A28BE: 0F 84 9E 00 00 00        -  je sao_al.exe+4A2962
+"sao_al.exe"+4A28C4: 41 80 F8 01              -  cmp r8l,01
+"sao_al.exe"+4A28C8: 0F 84 94 00 00 00        -  je sao_al.exe+4A2962
+"sao_al.exe"+4A28CE: 48 8B 0D 0B CA A3 01     -  mov rcx,[sao_al.exe+1EDF2E0]
+"sao_al.exe"+4A28D5: 48 85 C9                 -  test rcx,rcx
+"sao_al.exe"+4A28D8: 74 17                    -  je sao_al.exe+4A28F1
+"sao_al.exe"+4A28DA: 33 D2                    -  xor edx,edx
+"sao_al.exe"+4A28DC: 41 B8 10 27 00 00        -  mov r8d,00002710
+"sao_al.exe"+4A28E2: E8 09 DE C2 00           -  call sao_al.exe+10D06F0
+}
+</AssemblerScript>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Toggle Activation</Action>
+          <Keys>
+            <Key>114</Key>
+          </Keys>
+          <Description>满心情状态</Description>
+          <ID>0</ID>
+          <ActivateSound>Activate</ActivateSound>
+          <DeactivateSound>Deactivate</DeactivateSound>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>98</ID>
+      <Description>"锁时间 base"</Description>
+      <Options moHideChildren="1" moDeactivateChildrenAsWell="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{
+  锁时间 24小时制
+  小时：20 *60*60 = 72000
+  分钟: 30 *60 = 1800
+  72000+1800 = 73800 = 20:30
+}
+
+[ENABLE]
+aobscanmodule(dfdfsdr_INJECT,sao_al.exe,F3 0F 11 4B 30 72 0C)
+alloc(newmem,$1000,"sao_al.exe"+4EFD9B)
+
+label(code)
+label(return)
+label(pTimer)
+
+newmem:
+  mov [pTimer],rbx
+code:
+  // movss [rbx+30],xmm1
+  nop
+  nop
+  nop
+  nop
+  nop
+  jmp return
+
+pTimer:
+ dq 0
+
+dfdfsdr_INJECT:
+  jmp newmem
+return:
+
+registersymbol(dfdfsdr_INJECT pTimer)
+
+[DISABLE]
+dfdfsdr_INJECT:
+  db F3 0F 11 4B 30
+
+unregistersymbol(dfdfsdr_INJECT pTimer)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+4EFD9B
+
+"sao_al.exe"+4EFD64: 75 0A                    -  jne sao_al.exe+4EFD70
+"sao_al.exe"+4EFD66: F3 0F 10 0D 5A 82 62 01  -  movss xmm1,[sao_al.exe+1B17FC8]
+"sao_al.exe"+4EFD6E: EB 0C                    -  jmp sao_al.exe+4EFD7C
+"sao_al.exe"+4EFD70: F3 0F 10 0D B0 81 62 01  -  movss xmm1,[sao_al.exe+1B17F28]
+"sao_al.exe"+4EFD78: F3 0F 59 CE              -  mulss xmm1,xmm6
+"sao_al.exe"+4EFD7C: 48 8B 1D 4D BC 9E 01     -  mov rbx,[sao_al.exe+1EDB9D0]
+"sao_al.exe"+4EFD83: F3 0F 59 C8              -  mulss xmm1,xmm0
+"sao_al.exe"+4EFD87: F3 0F 59 0D 39 76 38 01  -  mulss xmm1,[sao_al.exe+18773C8]
+"sao_al.exe"+4EFD8F: F3 0F 58 4B 30           -  addss xmm1,[rbx+30]
+"sao_al.exe"+4EFD94: 0F 2F 0D 35 79 38 01     -  comiss xmm1,[sao_al.exe+18776D0]
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+4EFD9B: F3 0F 11 4B 30           -  movss [rbx+30],xmm1
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+4EFDA0: 72 0C                    -  jb sao_al.exe+4EFDAE
+"sao_al.exe"+4EFDA2: 89 7B 30                 -  mov [rbx+30],edi
+"sao_al.exe"+4EFDA5: C6 05 06 BC 9E 01 01     -  mov byte ptr [sao_al.exe+1EDB9B2],01
+"sao_al.exe"+4EFDAC: EB 3B                    -  jmp sao_al.exe+4EFDE9
+"sao_al.exe"+4EFDAE: 0F 2F 0D DF 78 38 01     -  comiss xmm1,[sao_al.exe+1877694]
+"sao_al.exe"+4EFDB5: 72 32                    -  jb sao_al.exe+4EFDE9
+"sao_al.exe"+4EFDB7: 40 38 3D F4 BB 9E 01     -  cmp [sao_al.exe+1EDB9B2],dil
+"sao_al.exe"+4EFDBE: 74 29                    -  je sao_al.exe+4EFDE9
+"sao_al.exe"+4EFDC0: E8 2B 0D 00 00           -  call sao_al.exe+4F0AF0
+"sao_al.exe"+4EFDC5: 45 33 C0                 -  xor r8d,r8d
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>99</ID>
+          <Description>"time"</Description>
+          <VariableType>Float</VariableType>
+          <Address>[pTimer]+30</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>100</ID>
+          <Description>"设置时间"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{$lua}
+
+if syntaxcheck then return end
+
+[ENABLE]
+
+-- not pTimer pointer
+if readInteger('pTimer') == nil then return end
+
+local inputTime = inputQuery('设置时间', '格式: hh:mm', '05:00')
+if inputTime == nil or inputTime == '' then return end
+
+local timer = 0
+
+-- split
+local arr = {}
+for i in string.gmatch(inputTime, "(%d.)") do
+   table.insert(arr, i)
+end
+
+-- hh
+timer = timer + (arr[1] * 60 * 60)
+
+-- mm
+timer = timer + (arr[2] * 60)
+
+
+writeFloat('[pTimer]+30', timer)
+
+arr = nil
+inputTime = nil
+timer = 0
+
+[DISABLE]
+
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>71</ID>
+      <Description>"100心情状态"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ 110 心情状态
+}
+
+[ENABLE]
+aobscanmodule(ffadsa_INJECT,sao_al.exe,8B 56 20 E8 B3 00 8D FF)
+alloc(newmem,$1000,"sao_al.exe"+82C0B5)
+
+label(code)
+label(return)
+
+newmem:
+  mov [rsi+20], #100
+  mov [rsi+24], #100
+code:
+  mov edx,[rsi+20]
+  call sao_al.exe+FC170
+  jmp return
+
+ffadsa_INJECT:
+  jmp newmem
+  nop 3
+return:
+registersymbol(ffadsa_INJECT)
+
+[DISABLE]
+ffadsa_INJECT:
+  db 8B 56 20 E8 B3 00 8D FF
+
+unregistersymbol(ffadsa_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sao_al.exe"+82C0B5
+
+"sao_al.exe"+82C090: 48 8B 01                 -  mov rax,[rcx]
+"sao_al.exe"+82C093: 8B D3                    -  mov edx,ebx
+"sao_al.exe"+82C095: FF 50 08                 -  call qword ptr [rax+08]
+"sao_al.exe"+82C098: 33 D2                    -  xor edx,edx
+"sao_al.exe"+82C09A: 0F B7 CB                 -  movzx ecx,bx
+"sao_al.exe"+82C09D: E8 5E D3 98 FF           -  call sao_al.exe+1B9400
+"sao_al.exe"+82C0A2: 4C 8B F8                 -  mov r15,rax
+"sao_al.exe"+82C0A5: 48 85 C0                 -  test rax,rax
+"sao_al.exe"+82C0A8: 0F 84 9F 05 00 00        -  je sao_al.exe+82C64D
+"sao_al.exe"+82C0AE: 48 8D 88 02 01 00 00     -  lea rcx,[rax+00000102]
+// ---------- INJECTING HERE ----------
+"sao_al.exe"+82C0B5: 8B 56 20                 -  mov edx,[rsi+20]
+"sao_al.exe"+82C0B8: E8 B3 00 8D FF           -  call sao_al.exe+FC170
+// ---------- DONE INJECTING  ----------
+"sao_al.exe"+82C0BD: 49 8D 8F 03 01 00 00     -  lea rcx,[r15+00000103]
+"sao_al.exe"+82C0C4: 8B 56 24                 -  mov edx,[rsi+24]
+"sao_al.exe"+82C0C7: E8 A4 00 8D FF           -  call sao_al.exe+FC170
+"sao_al.exe"+82C0CC: 0F 28 C7                 -  movaps xmm0,xmm7
+"sao_al.exe"+82C0CF: F3 0F 10 0D 79 AC 04 01  -  movss xmm1,[sao_al.exe+1876D50]
+"sao_al.exe"+82C0D7: F3 0F 59 C1              -  mulss xmm0,xmm1
+"sao_al.exe"+82C0DB: F3 0F 2C C8              -  cvttss2si ecx,xmm0
+"sao_al.exe"+82C0DF: 01 4E 2C                 -  add [rsi+2C],ecx
+"sao_al.exe"+82C0E2: F3 0F 10 15 32 AE 04 01  -  movss xmm2,[sao_al.exe+1876F1C]
+"sao_al.exe"+82C0EA: 44 0F 2E C7              -  ucomiss xmm8,xmm7
+}
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Comments>0000000000000000
+00007fffffffffff
+0000000020FFFFFF
+</Comments>
+  <DisassemblerComments>
+    <DisassemblerComment>
+      <Address>"sao_al.exe"+7F6728</Address>
+      <Comment>小于就跳
+</Comment>
+    </DisassemblerComment>
+    <DisassemblerComment>
+      <Address>"sao_al.exe"+7F672E</Address>
+      <Comment>返回true
+</Comment>
+    </DisassemblerComment>
+  </DisassemblerComments>
+</CheatTable>
